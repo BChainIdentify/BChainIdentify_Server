@@ -1,0 +1,21 @@
+{
+  "name": "rest_server",
+  "version": "1.0.0",
+  "description": "simple rest server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "BChainIdentify",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.17.3"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongoose": "^5.0.17",
+    "node-rsa": "^0.4.2",
+    "request": "^2.85.0",
+    "uuid": "^3.2.1"
+  }
+}

@@ -7,3 +7,16 @@
 * [Jakob Bussas](https://github.com/Jarkob)
 * [Oz Arpali](https://github.com/corexo)
 * [Kyung Cheng](https://github.com/kayung1997)
+
+# run
+```
+npm i
+```
+* Rest Server
+```
+node restServer.js
+```
+* Mockedserver
+```
+node mockedServer.js
+```
