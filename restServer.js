@@ -25,15 +25,20 @@ app.use(bodyParser.json());
 app.post('/api/addUser', function (req, res) {
     const pairKeys = require('./security/genPairKeys');
 
-    console.log("************************");
-    let keyPair = pairKeys.generatePairKeys();
-
     console.log(req.body.username);
     let hashname = genUsernameHash(req.body.username);
 
+    console.log(hashname);
+    console.log("************************");
+    let keyPair = pairKeys.generatePairKeys(hashname);
+
+
     let data = {
-        "username": hashname
-    };
+        "username": hashname,
+        "publicKey": keyPair.publicKey,
+        "signeHash": keyPair.signature
+    }
+
     console.log("User name = " + data);
 
     request.post({

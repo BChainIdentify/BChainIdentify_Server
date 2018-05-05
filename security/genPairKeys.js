@@ -1,5 +1,5 @@
 module.exports = {
-    generatePairKeys: function () {
+    generatePairKeys: function (toSign) {
 
         var NodeRSA = require('node-rsa');
         // generate Random RSA pair keys
@@ -10,10 +10,14 @@ module.exports = {
 
         // prublic key
         let publicKey = key.exportKey("pkcs8-public-pem");
-        return { "publicKey": publicKey, "privateKey": privateKey };
 
+        // sign
+        let signature = key.sign(toSign);
 
+        // verify
+        let isVerified = key.verify(toSign, signature);
+
+        return { "publicKey": publicKey, "privateKey": privateKey, "signature": signature };
     }
-
 }
 
