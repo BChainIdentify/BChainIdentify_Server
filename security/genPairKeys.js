@@ -16,7 +16,7 @@ module.exports = {
 
         // verify
         let isVerified = key.verify(toSign, signature);
-
+        console.log("Verified succes! " + isVerified);
         return { "publicKey": publicKey, "privateKey": privateKey, "signature": signature };
     }
 }

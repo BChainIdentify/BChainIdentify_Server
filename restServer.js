@@ -33,17 +33,18 @@ app.post('/api/addUser', function (req, res) {
     let keyPair = pairKeys.generatePairKeys(hashname);
 
 
+    let base64data = keyPair.signature.toString('base64');
     let data = {
-        "username": hashname,
+        "usernameHash": hashname,
         "publicKey": keyPair.publicKey,
-        "signeHash": keyPair.signature
+        "signedHash": base64data
     }
 
     console.log("User name = " + data);
 
     request.post({
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        url: 'http://localhost:8090/',
+        headers: { 'content-type': 'application/json' },
+        url: 'http://localhost:3003/api/addUser',
         form: data
 
     }, function (error, response, body) {
