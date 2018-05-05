@@ -44,13 +44,13 @@ app.post('/api/addUser', function (req, res) {
 
     request.post({
         headers: { 'content-type': 'application/json' },
-        url: 'http://localhost:8090/',
+        url: 'http://localhost:3003/api/addUser',
         form: data
 
     }, function (error, response, body) {
         console.log(response);
         if (response.statusCode == 200) {
-            res.send(keyPair.publicKey);
+            res.send({ "publicKey": keyPair.publicKey, "blockchain": response.body });
         } else {
             res.sendStatus(500);
         }
@@ -59,6 +59,9 @@ app.post('/api/addUser', function (req, res) {
 
 app.post('/api/identify', function (req, res) {
     let username = req.body.username;
+    let publicKey_client = req.body.publicKey;
+
+
 
 });
 // model to store data into database
