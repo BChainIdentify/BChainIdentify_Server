@@ -5,9 +5,7 @@ const express = require('express'),
     Register = require('./api/models/registerListModel'), //created model loading here
     bodyParser = require('body-parser');
 
-let querystring = require('querystring');
-const crypto = require('crypto');
-const hash = crypto.createHash('sha256');
+
 let http = require('http');
 let request = require('request');
 
@@ -25,6 +23,11 @@ app.use(bodyParser.json());
  * Route from the client to add a new user and creates the values to POST into blockchain core server
  */
 app.post('/api/addUser', function (req, res) {
+    const pairKeys = require('./security/genPairKeys');
+
+    console.log("************************");
+    let keyPair = pairKeys.generatePairKeys();
+
     console.log(req.body.username);
     let hashname = genUsernameHash(req.body.username);
 
@@ -41,6 +44,8 @@ app.post('/api/addUser', function (req, res) {
     }, function (error, response, body) {
         console.log(body);
     });
+
+    res.send(keyPair.publicKey);
 });
 
 // model to store data into database
@@ -58,6 +63,6 @@ console.log('RESTful API server started on: ' + port);
  * @param {string} value 
  */
 function genUsernameHash(value) {
-    hash.update(value);
-    return hash.digest('hex');
+    let hash = require('crypto').createHash('sha256').update(value).digest('hex');
+    return hash;
 }
