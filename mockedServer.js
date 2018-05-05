@@ -16,7 +16,7 @@ app.post('/', function (req, res) {
     //console.log(req.body.data);
     console.log("Inside");
     console.log(req.body);
-    res.send('ok');
+    res.sendStatus(200);
 });
 
 app.listen(8090);

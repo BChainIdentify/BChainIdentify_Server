@@ -44,16 +44,23 @@ app.post('/api/addUser', function (req, res) {
 
     request.post({
         headers: { 'content-type': 'application/json' },
-        url: 'http://localhost:3003/api/addUser',
+        url: 'http://localhost:8090/',
         form: data
 
     }, function (error, response, body) {
-        console.log(body);
+        console.log(response);
+        if (response.statusCode == 200) {
+            res.send(keyPair.publicKey);
+        } else {
+            res.sendStatus(500);
+        }
     });
-
-    res.send(keyPair.publicKey);
 });
 
+app.post('/api/identify', function (req, res) {
+    let username = req.body.username;
+
+});
 // model to store data into database
 let routes = require('./api/routes/registerListRoutes'); //importing route
 routes(app); //register the route
