@@ -59,13 +59,17 @@ app.post('/api/addUser', function (req, res) {
 });
 
 app.post('/api/identify', function (req, res) {
-    console.log(req.body);
     let username = req.body.username;
-    let publicKey_client = req.body.publicKey;
-    if ((username !== 'undefined') && publicKey_client !== 'undefined') {
-        res.send(true);
-    } else {
+    let publicKey = req.body.pkey;
+    //if ((username !== '' && username !== 'undefined' && username !== null) && (publicKey_client !== '' && publicKey_client !== 'undefined' && publicKey_client !== null)) {
+    if (publicKey.length === 0) {
+
+        console.log("false");
+        //}
         res.send(false);
+
+    } else {
+        res.send("true");
     }
     /*
     if ((req.body.publicKey).length == !0) {
