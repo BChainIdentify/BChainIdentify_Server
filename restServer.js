@@ -13,7 +13,7 @@ let request = require('request');
 
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/Tododb');
+//mongoose.connect('mongodb://localhost/Tododb');
 
 // 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -62,7 +62,7 @@ app.post('/api/identify', function (req, res) {
     let username = req.body.username;
     let publicKey_client = req.body.publicKey;
     if ((username != undefined) && publicKey_client != undefined) {
-
+        res.send(true);
     } else {
         res.send(false);
     }
