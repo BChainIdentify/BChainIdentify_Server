@@ -13,25 +13,37 @@ let request = require('request');
 
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/Tododb');
+mongoose.connect('mongodb://localhost:27017/Users');
 
 // 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+var Schema = mongoose.Schema;
+
+var userSchema = new Schema({
+    userName:String,
+    privateKey:String    
+})
+
+var userMongo = mongoose.model("userMongo",userSchema);
+
 /**
  * Route from the client to add a new user and creates the values to POST into blockchain core server
  */
 app.post('/api/addUser', function (req, res) {
-    const pairKeys = require('./security/genPairKeys');
 
-    console.log(req.body.username);
+    userMongo.findOne({ 'userName': req.body.username}, function (err, user) {
+        if (err) return handleError(err);
+        if(user != null){
+            res.sendStatus(409)
+            return
+        }
+        const pairKeys = require('./security/genPairKeys');
+
     let hashname = genUsernameHash(req.body.username);
 
-    console.log(hashname);
-    console.log("************************");
     let keyPair = pairKeys.generatePairKeys(hashname);
-
 
     let base64data = keyPair.signature.toString('base64');
     let data = {
@@ -40,7 +52,10 @@ app.post('/api/addUser', function (req, res) {
         "signedHash": base64data
     }
 
-    console.log("User name = " + data);
+    var saveUser =  new userMongo({
+        userName : req.body.username,
+        privateKey: keyPair.privateKey
+    })
 
     request.post({
         headers: { 'content-type': 'application/json' },
@@ -48,13 +63,22 @@ app.post('/api/addUser', function (req, res) {
         form: data
 
     }, function (error, response, body) {
-        console.log(response);
+        //console.log(response);
         if (response.statusCode == 200) {
+            //success save user in db
+            saveUser.save(function(err){
+                if (err){
+                    console.error("error when saving user")
+                }
+                console.log("user saved")
+            })
             res.send({ "publicKey": keyPair.publicKey, "blockchain": response.body });
         } else {
             res.sendStatus(500);
         }
     });
+      });
+
 });
 
 app.post('/api/identify', function (req, res) {
