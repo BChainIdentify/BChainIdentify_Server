@@ -24,44 +24,55 @@ app.use(bodyParser.json());
  */
 app.post('/api/addUser', function (req, res) {
     const pairKeys = require('./security/genPairKeys');
+    let username = req.body.username;
+    if (username != undefined) {
+        let hashname = genUsernameHash(username);
 
-    console.log(req.body.username);
-    let hashname = genUsernameHash(req.body.username);
-
-    console.log(hashname);
-    console.log("************************");
-    let keyPair = pairKeys.generatePairKeys(hashname);
+        console.log(hashname);
+        console.log("************************");
+        let keyPair = pairKeys.generatePairKeys(hashname);
 
 
-    let base64data = keyPair.signature.toString('base64');
-    let data = {
-        "usernameHash": hashname,
-        "publicKey": keyPair.publicKey,
-        "signedHash": base64data
-    }
-
-    console.log("User name = " + data);
-
-    request.post({
-        headers: { 'content-type': 'application/json' },
-        url: 'http://localhost:3003/api/addUser',
-        form: data
-
-    }, function (error, response, body) {
-        console.log(response);
-        if (response.statusCode == 200) {
-            res.send({ "publicKey": keyPair.publicKey, "blockchain": response.body });
-        } else {
-            res.sendStatus(500);
+        let base64data = keyPair.signature.toString('base64');
+        let data = {
+            "usernameHash": hashname,
+            "publicKey": keyPair.publicKey,
+            "signedHash": base64data
         }
-    });
+
+        console.log("User name = " + data);
+
+        request.post({
+            headers: { 'content-type': 'application/json' },
+            url: 'http://localhost:3003/api/addUser',
+            form: data
+
+        }, function (error, response, body) {
+            console.log(response);
+            if (response.statusCode == 200) {
+                res.send({ "publicKey": keyPair.publicKey, "blockchain": response.body });
+            } else {
+                res.sendStatus(500);
+            }
+        });
+    }
 });
 
 app.post('/api/identify', function (req, res) {
     let username = req.body.username;
     let publicKey_client = req.body.publicKey;
+    if ((username != undefined) && publicKey_client != undefined) {
 
-
+    } else {
+        res.send(false);
+    }
+    /*
+    if ((req.body.publicKey).length == !0) {
+        let username = req.body.username;
+        let publicKey_client = req.body.publicKey;
+    }
+    console.log("No publicKey defined");
+*/
 
 });
 // model to store data into database
