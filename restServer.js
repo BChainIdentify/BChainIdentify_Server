@@ -61,7 +61,7 @@ app.post('/api/addUser', function (req, res) {
 app.post('/api/identify', function (req, res) {
     let username = req.body.username;
     let publicKey_client = req.body.publicKey;
-    if ((username != undefined) && publicKey_client != undefined) {
+    if ((username !== 'undefined') && publicKey_client !== 'undefined') {
         res.send(true);
     } else {
         res.send(false);
