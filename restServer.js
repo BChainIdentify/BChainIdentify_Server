@@ -15,6 +15,7 @@ let request = require('request');
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/Users');
 
+
 // 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -77,15 +78,29 @@ app.post('/api/addUser', function (req, res) {
             res.sendStatus(500);
         }
     });
-      });
-
+    });
 });
 
 app.post('/api/identify', function (req, res) {
     let username = req.body.username;
-    let publicKey_client = req.body.publicKey;
+    let publicKey = req.body.pkey;
+    //if ((username !== '' && username !== 'undefined' && username !== null) && (publicKey_client !== '' && publicKey_client !== 'undefined' && publicKey_client !== null)) {
+    if (publicKey.length === 0) {
 
+        console.log("false");
+        //}
+        res.send(false);
 
+    } else {
+        res.send("true");
+    }
+    /*
+    if ((req.body.publicKey).length == !0) {
+        let username = req.body.username;
+        let publicKey_client = req.body.publicKey;
+    }
+    console.log("No publicKey defined");
+*/
 
 });
 // model to store data into database
