@@ -1,13 +1,14 @@
 {
-  "name": "rest_server",
+  "name": "bchainidentify_server",
   "version": "1.0.0",
-  "description": "simple rest server",
-  "main": "index.js",
+  "description": "BChainIdentify REST-API",
+  "main": "restServer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node restServer.js"
   },
   "author": "BChainIdentify",
-  "license": "ISC",
+  "license": "AGPL v3 (GNU AFFERO GENERAL PUBLIC LICENSE)",
   "devDependencies": {
     "nodemon": "^1.17.3"
   },
