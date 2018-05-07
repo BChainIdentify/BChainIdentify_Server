@@ -23,64 +23,66 @@ app.use(bodyParser.json());
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-    userName:String,
-    privateKey:String    
+    userName: String,
+    privateKey: String
 })
 
-var userMongo = mongoose.model("userMongo",userSchema);
+var userMongo = mongoose.model("userMongo", userSchema);
 
 /**
  * Route from the client to add a new user and creates the values to POST into blockchain core server
  */
 app.post('/api/addUser', function (req, res) {
 
-    userMongo.findOne({ 'userName': req.body.username}, function (err, user) {
+    userMongo.findOne({ 'userName': req.body.username }, function (err, user) {
         if (err) return handleError(err);
-        if(user != null){
+        if (user != null) {
             res.sendStatus(409)
             return
         }
         const pairKeys = require('./security/genPairKeys');
 
-    let hashname = genUsernameHash(req.body.username);
+        let hashname = genUsernameHash(req.body.username);
 
-    let keyPair = pairKeys.generatePairKeys(hashname);
+        let keyPair = pairKeys.generatePairKeys(hashname);
 
-    let base64data = keyPair.signature.toString('base64');
-    let data = {
-        "usernameHash": hashname,
-        "publicKey": keyPair.publicKey,
-        "signedHash": base64data
-    }
-
-    var saveUser =  new userMongo({
-        userName : req.body.username,
-        privateKey: keyPair.privateKey
-    })
-
-    request.post({
-        headers: { 'content-type': 'application/json' },
-        url: 'http://localhost:3003/api/addUser',
-        form: data
-
-    }, function (error, response, body) {
-        //console.log(response);
-        if (response.statusCode == 200) {
-            //success save user in db
-            saveUser.save(function(err){
-                if (err){
-                    console.error("error when saving user")
-                }
-                console.log("user saved")
-            })
-            res.send({ "publicKey": keyPair.publicKey, "blockchain": response.body });
-        } else {
-            res.sendStatus(500);
+        let base64data = keyPair.signature.toString('base64');
+        let data = {
+            "usernameHash": hashname,
+            "publicKey": keyPair.publicKey,
+            "signedHash": base64data
         }
-    });
+
+        var saveUser = new userMongo({
+            userName: req.body.username,
+            privateKey: keyPair.privateKey
+        })
+
+        request.post({
+            headers: { 'content-type': 'application/json' },
+            url: 'http://localhost:3003/api/addUser',
+            form: data
+
+        }, function (error, response, body) {
+            //console.log(response);
+            if (response.statusCode == 200) {
+                //success save user in db
+                saveUser.save(function (err) {
+                    if (err) {
+                        console.error("error when saving user")
+                    }
+                    console.log("user saved")
+                })
+                res.send({ "publicKey": keyPair.publicKey, "blockchain": response.body });
+            } else {
+                res.sendStatus(500);
+            }
+        });
     });
 });
 
+// TODO: This is only for the showcase, this method has to be validate with privatekey and signe
+// And the connection to the blockchain_core
 app.post('/api/identify', function (req, res) {
     let username = req.body.username;
     let publicKey = req.body.pkey;
